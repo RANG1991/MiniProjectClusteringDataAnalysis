@@ -28,10 +28,8 @@ public class RanImprovement {
     public void calculateProbs(int movieID_i, List<Integer> selectedMoviesIds, double[] p_mArray) {
         for (int movieID_j : selectedMoviesIds) {
             if (movieID_i < movieID_j) {
-                //System.out.println(movieID_i + " " + movieID_j);
                 Set<Integer> temp = new HashSet<>(processing.getMovieIdToUsersIds().get(movieID_i));
                 temp.retainAll(processing.getMovieIdToUsersIds().get(movieID_j));
-                //if (temp.size() > 0) {
 
                 double yearMovieI = processing.getMovieIdToMovieProps().get(movieID_i).getThird();
 
@@ -135,7 +133,6 @@ public class RanImprovement {
     public double calculateDistance(double[] vector1, double[] vector2)
     {
         double sum = 0;
-        //System.out.println(vector2);
         for (int i = 0 ; i < vector2.length ; i++)
         {
            sum = sum + Math.pow(vector1[i] - vector2[i], 2);
@@ -182,7 +179,6 @@ public class RanImprovement {
                     int minIndexOfCentroids = -1;
                     for (int l = 0; l < K; l++){
                         double dist = calculateDistance(this.movieVectors.get(movie), centroids.get(l));
-                      //System.out.println(dist);
                         if (dist <= minDist) {
                             minIndexOfCentroids = l;
                             minDist = dist;
@@ -232,11 +228,6 @@ public class RanImprovement {
                 {
                     if (movieId_i < movieId_j)
                     {
-//						if (!RelationFraction.containsKey(new AbstractMap.SimpleEntry<Integer, Integer>(movieId_i, movieId_j)))
-//						{
-//							System.out.println(movieId_i + " " + movieId_j);
-//						}
-//                        System.out.println(movieId_i + " " + movieId_j);
                         cost = cost + Math.log(1.0 /
                                 Math.exp(RelationFraction.get(new AbstractMap.SimpleEntry<Integer, Integer>(movieId_i, movieId_j))));
                     }
