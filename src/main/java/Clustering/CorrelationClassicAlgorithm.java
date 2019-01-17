@@ -70,7 +70,7 @@ public class CorrelationClassicAlgorithm {
 		}
 	}
 
-	public static void correlationAlgorithm(List<Integer> selectedMoviesIds, double[] p_mArray, 
+	public static void correlationAlgorithm(List<Integer> selectedMoviesIds, double[] p_mArray,
 			HashMap<Integer, ArrayList<Integer>> correlation, Processing processing,
 			HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Double> RelationFraction)
 	{

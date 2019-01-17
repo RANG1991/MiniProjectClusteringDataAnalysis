@@ -4,10 +4,10 @@ public class Main {
 	public static void main (String[] args)
 	{
 		double start = System.currentTimeMillis();
-        String ratingsFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/ml-1m/ratings.dat";
-        String moviesFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/ml-1m/movies.dat";
+        String ratingsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/ratings.dat";
+        String moviesFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/movies.dat";
         int correlationAlgorithm = 1;
-        String moviesIdsFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/selected_movies_ids_100.txt";
+        String moviesIdsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/selected_movies_ids_100.txt";
         
         Processing processing = new Processing();
         processing.readMoviesFile(moviesFileName);
@@ -33,7 +33,12 @@ public class Main {
 //        	improAlgo.runAlgorithm();
 //        }
 
-        ShakedImprovement s = new ShakedImprovement(processing);
+        //CorrelationClassicAlgorithm s = new CorrelationClassicAlgorithm(processing);
+        //ClassicAndImprovement s = new ClassicAndImprovement(processing);
+       //ShakedImprovement2 s = new ShakedImprovement2(processing);
+        //RanImprovment2 s = new RanImprovment2(processing);
+        ShakedTry s = new ShakedTry(processing);
+
         s.runAlgorithm();
         
         System.out.println(System.currentTimeMillis() - start);
