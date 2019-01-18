@@ -14,34 +14,11 @@ public class Main {
         processing.readRatingsFile(ratingsFileName);
         processing.readMoviesIdsFile(moviesIdsFileName);
         processing.readRatingsFileIncludeRating(ratingsFileName);
-//        for (Integer entry : processing.getMovieIdToUsersIdsIncludingRatings().keySet())
-//        {
-//            System.out.println(processing.getMovieIdToUsersIdsIncludingRatings().get(entry));
-//        }
-        
-//
-//
-//        	CorrelationClassicAlgorithm classicAlgo = new CorrelationClassicAlgorithm(processing);
-//        	classicAlgo.runAlgorithm();
 
-
-//
-//
-//        if (correlationAlgorithm == 2)
-//        {
-//        	CorrelationAlgorithmImprovement improAlgo = new CorrelationAlgorithmImprovement(processing);
-//        	improAlgo.runAlgorithm();
-//        }
-
-        //CorrelationClassicAlgorithm s = new CorrelationClassicAlgorithm(processing);
-        //ClassicAndImprovement s = new ClassicAndImprovement(processing);
-       //ShakedImprovement2 s = new ShakedImprovement2(processing);
-        //RanImprovment2 s = new RanImprovment2(processing);
-        ShakedTry s = new ShakedTry(processing);
+        CorrelationAlgorithmImprovement s = new CorrelationAlgorithmImprovement(processing);
 
         s.runAlgorithm();
         
         System.out.println(System.currentTimeMillis() - start);
 	}
-
 }

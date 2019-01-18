@@ -144,17 +144,46 @@ public class ShakedTry {
 
     public double KMedoids()
     {
-        ArrayList<Integer> medoids = generateRandomCentroids(processing.getNumberOfSelctedMovies());
-        HashMap<Integer, HashSet<Integer>> medoidsGroups = new HashMap<>();
+//        ArrayList<Integer> medoids = generateRandomCentroids(processing.getNumberOfSelctedMovies());
+//        HashMap<Integer, HashSet<Integer>> medoidsGroups = new HashMap<>();
         HashMap<Integer, HashSet<Integer>> finalMedoidsGroups = null;
         boolean canImprove = true;
-
-        for (int i = 0; i < medoids.size(); i++)
+//
+//        for (int i = 0; i < medoids.size(); i++)
+//        {
+//            medoidsGroups.put(medoids.get(i), new HashSet<Integer>());
+//            medoidsGroups.get(medoids.get(i)).add(medoids.get(i));
+//        }
+//        System.out.println(medoidsGroups);
+        ArrayList<Integer> remaining = new ArrayList<Integer>(processing.getSelectedMoviesIds());
+        HashMap<Integer, HashSet<Integer>> medoidsGroups = new HashMap<>();
+        HashSet<Integer> clusteringSet = new HashSet<>();
+        int sum = 0;
+        while (remaining.size() > 0)
         {
-            medoidsGroups.put(medoids.get(i), new HashSet<Integer>());
-            medoidsGroups.get(medoids.get(i)).add(medoids.get(i));
+            HashSet<Integer> cluster = new HashSet<Integer>();
+
+            //     int index = (int) Math.floor(Math.random() * remaining.size());
+            int minUsers = Integer.MAX_VALUE;
+            int indexOfMin = 0;
+            for (int i = 0 ; i < remaining.size() ; i++)
+            {
+                if (minUsers > processing.getMovieIdToUsersIds().get(remaining.get(i)).size())
+                {
+                    minUsers = processing.getMovieIdToUsersIds().get(remaining.get(i)).size();
+                    indexOfMin = i;
+                }
+            }
+            int index = indexOfMin;
+
+            cluster = realCluster(correlation.get(remaining.get(index)));
+            cluster.add(remaining.get(index));
+            cluster.removeAll(clusteringSet);
+            medoidsGroups.put(remaining.get(index), cluster);
+            remaining.removeAll(cluster);
+            clusteringSet.addAll(cluster);
+            sum = sum + cluster.size();
         }
-        System.out.println(medoidsGroups);
         double initalSum = calculateSingleIterCost(medoidsGroups);
         while(canImprove) {
             if (medoidsGroups.size()> 1){
@@ -234,6 +263,29 @@ public class ShakedTry {
        // System.out.println("end: " + medoidsGroups);
 
         return calculateSingleIterCost(medoidsGroups);
+    }
+
+    private  HashSet<Integer> realCluster(ArrayList<Integer> remaning) {
+        ArrayList<Integer> toRemove = new ArrayList<Integer>();
+        HashSet<Integer> cluster = new HashSet<Integer>(remaning);
+        for(int movieId_i : remaning){
+            int size = remaning.size();
+            int counter=0;
+            for (int movieId_j : remaning)
+            {
+                if ((movieId_i != movieId_j) && !toRemove.contains(movieId_i)){
+                    if (correlation.get(movieId_i).contains(movieId_j)){
+                        counter++;
+                    }
+                }
+            }
+            if (counter < size/2){
+                toRemove.add(movieId_i);
+            }
+        }
+        cluster.removeAll(toRemove);
+        return cluster;
+
     }
 
 
