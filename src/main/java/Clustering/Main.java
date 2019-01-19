@@ -35,7 +35,7 @@ public class Main {
 
             double sumReg = r.runAlgorithm();
 
-            System.out.println(sumImp + " " + sumReg);
+            System.out.println(sumImp + "\t" + sumReg);
         }
         
         System.out.println(System.currentTimeMillis() - start);
