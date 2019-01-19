@@ -16,11 +16,11 @@ public class CorrelationAlgorithmImprovement {
 		this.processing = processing;
 	}
 
-	public void runAlgorithm() {
+	public double runAlgorithm() {
 		p_mArray = processing.p_m(processing.getSelectedMoviesIds());
 		processing.getSelectedMoviesIds().forEach(x->calculateProbs(x, processing.getSelectedMoviesIds(), p_mArray));
 		createVectors();
-		runClustering();
+		return runClustering();
 	}
 
 	public void calculateProbs(int movieID_i, List<Integer> selectedMoviesIds, double[] p_mArray) {
@@ -86,12 +86,12 @@ public class CorrelationAlgorithmImprovement {
 		}
 	}
 
-	public double calculateSingleIterCost(HashMap<Integer, HashSet<Integer>> medoidsGroups)
+	public double calculateSingleIterCost(HashMap<Integer, HashSet<Integer>> clustering)
 	{
 		double sumClustering = 0;
-		for (Integer medoid : medoidsGroups.keySet())
+		for (Integer movieID : clustering.keySet())
 		{
-			HashSet<Integer> cluster = new HashSet<Integer>(medoidsGroups.get(medoid));
+			HashSet<Integer> cluster = new HashSet<Integer>(clustering.get(movieID));
 			sumClustering= sumClustering + calculateCost(cluster, p_mArray , processing.getSelectedMoviesIds(), RelationFraction);
 		}
 		return sumClustering;
@@ -101,40 +101,18 @@ public class CorrelationAlgorithmImprovement {
 	public double runClustering()
 	{
 		boolean canImprove = true;
-		ArrayList<Integer> remaining = new ArrayList<Integer>(processing.getSelectedMoviesIds());
 		HashMap<Integer, HashSet<Integer>> clustering = new HashMap<>();
-		HashSet<Integer> clusteringSet = new HashSet<>();
-		int sum = 0;
-		while (remaining.size() > 0)
-		{
-			HashSet<Integer> cluster = new HashSet<Integer>();
-			int minUsers = Integer.MAX_VALUE;
-			int indexOfMin = 0;
-			for (int i = 0 ; i < remaining.size() ; i++)
-			{
-				if (minUsers > processing.getMovieIdToUsersIds().get(remaining.get(i)).size())
-				{
-					minUsers = processing.getMovieIdToUsersIds().get(remaining.get(i)).size();
-					indexOfMin = i;
-				}
-			}
-			int index = indexOfMin;
-
-			cluster = realCluster(correlation.get(remaining.get(index)));
-			cluster.add(remaining.get(index));
-			cluster.removeAll(clusteringSet);
-			clustering.put(remaining.get(index), cluster);
-			remaining.removeAll(cluster);
-			clusteringSet.addAll(cluster);
-			sum = sum + cluster.size();
-		}
+		for (int i = 0; i < processing.getSelectedMoviesIds().size() ; i++)
+        {
+           clustering.put(processing.getSelectedMoviesIds().get(i), new HashSet<Integer>());
+           clustering.get(processing.getSelectedMoviesIds().get(i)).add(processing.getSelectedMoviesIds().get(i));
+        }
 		double initalSum = calculateSingleIterCost(clustering);
 		while(canImprove) {
-			if (clustering.size()> 1){
+			if (clustering.size() > 1){
 				double currSum = createClusters(clustering);
-				if (currSum < initalSum )
+				if (currSum < initalSum)
 				{
-					System.out.println(currSum);
 					initalSum = currSum;
 				}
 				else {
@@ -142,74 +120,49 @@ public class CorrelationAlgorithmImprovement {
 				}
 			}
 		}
-		double sumClustering = sumClustering(clustering);
-		return sumClustering;
+		return sumClustering(clustering);
 	}
 
 
-	public double createClusters(HashMap<Integer, HashSet<Integer>> medoidsGroups)
+	public double createClusters(HashMap<Integer, HashSet<Integer>> clustering)
 	{
-		HashMap<Integer, HashSet<Integer>> tempMedoidsGroups = new HashMap<>();
+		HashMap<Integer, HashSet<Integer>> tempClustering = new HashMap<>();
 
-		for(Integer entry : medoidsGroups.keySet() ){
-			HashSet<Integer> h = new HashSet<> (medoidsGroups.get(entry));
-			tempMedoidsGroups.put(entry,h);
+		for(Integer entry : clustering.keySet() ){
+			HashSet<Integer> h = new HashSet<> (clustering.get(entry));
+			tempClustering.put(entry,h);
 		}
-
 
 		double minDist = Integer.MAX_VALUE;
-		int minMedoid1 = -1;
-		int minMedoid2 = -1;
+		int minMovie1 = -1;
+		int minMovie2 = -1;
 
-		for (Integer medoid1 : medoidsGroups.keySet()) {
-			for (Integer medoid2 : medoidsGroups.keySet()) {
-				if (medoid1 < medoid2) {
-					HashSet<Integer> clusterOfMax = tempMedoidsGroups.get(medoid2);
-					tempMedoidsGroups.get(medoid1).addAll(clusterOfMax);
-					tempMedoidsGroups.remove(medoid2);
-					double currSum = calculateSingleIterCost(tempMedoidsGroups);
+		for (Integer movie1 : clustering.keySet()) {
+			for (Integer movie2 : clustering.keySet()) {
+				if (movie1 < movie2) {
+					HashSet<Integer> clusterOfMax = tempClustering.get(movie2);
+					tempClustering.get(movie1).addAll(clusterOfMax);
+					tempClustering.remove(movie2);
+					double currSum = calculateSingleIterCost(tempClustering);
 					if (currSum <= minDist) {
-						minMedoid1 = medoid1;
-						minMedoid2 = medoid2;
+						minMovie1 = movie1;
+						minMovie2 = movie2;
 						minDist = currSum;
 					}
-					for(Integer entry : medoidsGroups.keySet() ){
-						HashSet<Integer> h = new HashSet<> (medoidsGroups.get(entry));
-						tempMedoidsGroups.put(entry,h);
+					for(Integer entry : clustering.keySet() ){
+						HashSet<Integer> h = new HashSet<> (clustering.get(entry));
+						tempClustering.put(entry,h);
 					}
 				}
 			}
 		}
-		if (minMedoid1!=-1 && minMedoid2!=-1){
-			HashSet<Integer> clusterOfMax = medoidsGroups.get(minMedoid2);
-			medoidsGroups.get(minMedoid1).addAll(clusterOfMax);
-			medoidsGroups.remove(minMedoid2);
+		if (minMovie1!=-1 && minMovie2!=-1){
+			HashSet<Integer> clusterOfMax = clustering.get(minMovie2);
+			clustering.get(minMovie1).addAll(clusterOfMax);
+			clustering.remove(minMovie2);
 		}
 
-		return calculateSingleIterCost(medoidsGroups);
-	}
-
-	private HashSet<Integer> realCluster(ArrayList<Integer> remaning) {
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();
-		HashSet<Integer> cluster = new HashSet<Integer>(remaning);
-		for(int movieId_i : remaning){
-			int size = remaning.size();
-			int counter=0;
-			for (int movieId_j : remaning)
-			{
-				if ((movieId_i != movieId_j) && !toRemove.contains(movieId_i)){
-					if (correlation.get(movieId_i).contains(movieId_j)){
-						counter++;
-					}
-				}
-			}
-			if (counter < size/2){
-				toRemove.add(movieId_i);
-			}
-		}
-		cluster.removeAll(toRemove);
-		return cluster;
-
+		return calculateSingleIterCost(clustering);
 	}
 
 	public double calculateCost(HashSet<Integer> cluster, double[] p_mArray ,  List<Integer> selectedMoviesIds,
@@ -242,10 +195,12 @@ public class CorrelationAlgorithmImprovement {
 	public double sumClustering(HashMap<Integer, HashSet<Integer>> clustering)
 	{
 		double sumClustering = 0;
+		int sum = 0;
 		for (Integer movieID : clustering.keySet())
 		{
 			HashSet<Integer> cluster = new HashSet<Integer>(clustering.get(movieID));
 			cluster.add(movieID);
+			sum = sum + cluster.size();
 			for (int movieId : cluster)
 			{
 				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
