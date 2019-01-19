@@ -190,7 +190,7 @@ public class ShakedTry {
                 double currSum = createClusters(medoidsGroups);
                 if (currSum < initalSum )
                 {
-                    System.out.println(currSum);
+                    //System.out.println(currSum);
                     initalSum = currSum;
                     finalMedoidsGroups = new HashMap<>(medoidsGroups);
                 }

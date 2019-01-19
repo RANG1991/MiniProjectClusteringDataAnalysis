@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="moviecluster">
+    <output-path>$PROJECT_DIR$/out/artifacts/moviecluster</output-path>
+    <root id="archive" name="moviecluster.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="1" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/jfree/jcommon/1.0.16/jcommon-1.0.16.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/jfree/jfreechart/1.0.13/jfreechart-1.0.13.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

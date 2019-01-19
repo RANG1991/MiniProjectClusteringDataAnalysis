@@ -3,9 +3,9 @@ package Clustering;
 public class Main {
 	public static void main (String[] args) throws Exception
 	{
-		String datasetFolder = args[1];
-        int correlationAlgorithm = Integer.valueOf(args[2]);
-        String moviesIdsFileName = args[3];
+		String datasetFolder = args[0];
+        int correlationAlgorithm = Integer.valueOf(args[1]);
+        String moviesIdsFileName = args[2];
         String ratingsFileName = datasetFolder + "//ratings.dat";
         String moviesFileName = datasetFolder + "//movies.dat";
 
