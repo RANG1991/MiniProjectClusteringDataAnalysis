@@ -30,10 +30,10 @@ public class Probs2 {
     
     public static void main(String[] args) {
     	double start = System.currentTimeMillis();
-        String ratingsFileName = args[1] + "/ratings.dat";
-        String moviesFileName = args[1] + "/movies.dat";
-        int correlationAlgorithm = Integer.valueOf(args[2]);
-        String moviesIdsFileName = args[3];
+        String ratingsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/ratings.dat";
+        String moviesFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/movies.dat";
+        //int correlationAlgorithm = Integer.valueOf(args[2]);
+        String moviesIdsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/selected_movies_ids_100.txt";
     	   	readMoviesNames(moviesFileName);
     	   	try (Stream<String> stream = Files.lines(Paths.get(ratingsFileName))) {
               stream.forEach(Probs2::processStrings);

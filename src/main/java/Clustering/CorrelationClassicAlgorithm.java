@@ -23,17 +23,15 @@ public class CorrelationClassicAlgorithm {
 	{
 		double[] p_mArray = processing.p_m(processing.getSelectedMoviesIds());
 		processing.getSelectedMoviesIds().forEach(x->calculateProbs(x, processing.getSelectedMoviesIds(), p_mArray));
-//		System.out.println(correlation);
-//		System.out.println(this.RelationFraction);
-		return correlationAlgorithm(processing.getSelectedMoviesIds(), p_mArray, this.correlation, this.processing,
+		double sumClustering = correlationAlgorithm(processing.getSelectedMoviesIds(), p_mArray, this.correlation, this.processing,
 				this.RelationFraction);
+		return sumClustering;
 	}
 	
 
 	public void calculateProbs(int movieID_i, List<Integer> selectedMoviesIds, double[] p_mArray) {
 		for (int movieID_j : selectedMoviesIds) {
 			if (movieID_i < movieID_j) {
-				//System.out.println(movieID_i + " " + movieID_j);
 				Set<Integer> temp = new HashSet<>(processing.getMovieIdToUsersIds().get(movieID_i));
 				temp.retainAll(processing.getMovieIdToUsersIds().get(movieID_j));
 				//if (temp.size() > 0) {
@@ -81,10 +79,11 @@ public class CorrelationClassicAlgorithm {
 		while (remaining.size() > 0)
 		{
 			HashSet<Integer> cluster = new HashSet<Integer>();
-			int index = (int) Math.floor(Math.random() * remaining.size());
-			//System.out.println(remaining.get(index));
-			cluster.addAll(correlation.get(remaining.get(index)));
-			//System.out.println(correlation.get(remaining.get(index)));
+			int index = (int) Math.floor(Math.random() * (remaining.size()));
+			if (correlation.containsKey(remaining.get(index)))
+			{
+				cluster.addAll(correlation.get(remaining.get(index)));
+			}
 			cluster.add(remaining.get(index));
 			cluster.removeAll(clusteringSet);
 			remaining.removeAll(cluster);
@@ -97,18 +96,17 @@ public class CorrelationClassicAlgorithm {
 		{
 			for (int movieId : cluster)
 			{
-			//	System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
+				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
 			}
-			//System.out.println();
-			sumClustering= sumClustering+ claculateCost(cluster, p_mArray , selectedMoviesIds, RelationFraction);
-
+			System.out.println();
+			sumClustering= sumClustering+ calculateCost(cluster, p_mArray , selectedMoviesIds, RelationFraction);
 
 		}
 		return sumClustering;
 	}
 
-	public static double claculateCost(HashSet<Integer> cluster, double[] p_mArray ,  List<Integer> selectedMoviesIds,
-			HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Double> RelationFraction)
+	public static double calculateCost(HashSet<Integer> cluster, double[] p_mArray , List<Integer> selectedMoviesIds,
+									   HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Double> RelationFraction)
 	{
 		if (cluster.size() == 1)
 		{
@@ -125,10 +123,6 @@ public class CorrelationClassicAlgorithm {
 				{
 					if (movieId_i < movieId_j)
 					{
-//						if (!RelationFraction.containsKey(new AbstractMap.SimpleEntry<Integer, Integer>(movieId_i, movieId_j)))
-//						{
-//							System.out.println(movieId_i + " " + movieId_j);
-//						}
 						cost = cost + Math.log(1.0 / 
 								RelationFraction.get(new AbstractMap.SimpleEntry<Integer, Integer>(movieId_i, movieId_j)));
 					}

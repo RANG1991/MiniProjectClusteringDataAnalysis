@@ -210,6 +210,10 @@ public class Processing {
 		return numberOfUsers;
 	}
 
+	public void setSelectedMoviesIds(ArrayList<Integer> newSelectedMoviesIds) {
+		selectedMoviesIds = newSelectedMoviesIds;
+	}
+
 	public ArrayList<Integer> getSelectedMoviesIds() {
 		return selectedMoviesIds;
 	}
