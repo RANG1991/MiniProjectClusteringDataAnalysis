@@ -19,13 +19,13 @@ public class CorrelationClassicAlgorithm {
 		this.processing = processing;
 	}
 
-	public void runAlgorithm()
+	public double runAlgorithm()
 	{
 		double[] p_mArray = processing.p_m(processing.getSelectedMoviesIds());
 		processing.getSelectedMoviesIds().forEach(x->calculateProbs(x, processing.getSelectedMoviesIds(), p_mArray));
-		System.out.println(correlation);
-		System.out.println(this.RelationFraction);
-		correlationAlgorithm(processing.getSelectedMoviesIds(), p_mArray, this.correlation, this.processing, 
+//		System.out.println(correlation);
+//		System.out.println(this.RelationFraction);
+		return correlationAlgorithm(processing.getSelectedMoviesIds(), p_mArray, this.correlation, this.processing,
 				this.RelationFraction);
 	}
 	
@@ -70,7 +70,7 @@ public class CorrelationClassicAlgorithm {
 		}
 	}
 
-	public static void correlationAlgorithm(List<Integer> selectedMoviesIds, double[] p_mArray,
+	public static double correlationAlgorithm(List<Integer> selectedMoviesIds, double[] p_mArray,
 			HashMap<Integer, ArrayList<Integer>> correlation, Processing processing,
 			HashMap<AbstractMap.SimpleEntry<Integer, Integer>, Double> RelationFraction)
 	{
@@ -97,14 +97,14 @@ public class CorrelationClassicAlgorithm {
 		{
 			for (int movieId : cluster)
 			{
-				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
+			//	System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
 			}
-			System.out.println();
+			//System.out.println();
 			sumClustering= sumClustering+ claculateCost(cluster, p_mArray , selectedMoviesIds, RelationFraction);
 
 
 		}
-		System.out.println(sumClustering);
+		return sumClustering;
 	}
 
 	public static double claculateCost(HashSet<Integer> cluster, double[] p_mArray ,  List<Integer> selectedMoviesIds,

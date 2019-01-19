@@ -16,11 +16,11 @@ public class CorrelationAlgorithmImprovement {
 		this.processing = processing;
 	}
 
-	public void runAlgorithm() {
+	public double runAlgorithm() {
 		p_mArray = processing.p_m(processing.getSelectedMoviesIds());
 		processing.getSelectedMoviesIds().forEach(x->calculateProbs(x, processing.getSelectedMoviesIds(), p_mArray));
 		createVectors();
-		runClustering();
+		return runClustering();
 	}
 
 	public void calculateProbs(int movieID_i, List<Integer> selectedMoviesIds, double[] p_mArray) {
@@ -134,7 +134,6 @@ public class CorrelationAlgorithmImprovement {
 				double currSum = createClusters(clustering);
 				if (currSum < initalSum )
 				{
-					System.out.println(currSum);
 					initalSum = currSum;
 				}
 				else {
@@ -248,9 +247,9 @@ public class CorrelationAlgorithmImprovement {
 			cluster.add(movieID);
 			for (int movieId : cluster)
 			{
-				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
+			//	System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
 			}
-			System.out.println();
+			//System.out.println();
 			sumClustering= sumClustering + calculateCost(cluster, p_mArray , processing.getSelectedMoviesIds(), RelationFraction);
 		}
 		return sumClustering;
