@@ -96,9 +96,9 @@ public class CorrelationClassicAlgorithm {
 		{
 			for (int movieId : cluster)
 			{
-				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
+			//	System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
 			}
-			System.out.println();
+			//System.out.println();
 			sumClustering= sumClustering+ calculateCost(cluster, p_mArray , selectedMoviesIds, RelationFraction);
 
 		}

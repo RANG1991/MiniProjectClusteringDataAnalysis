@@ -218,11 +218,6 @@ public class Processing {
 		return selectedMoviesIds;
 	}
 
-	public void setSelectedMoviesIds(ArrayList<Integer> moviesList)
-	{
-		selectedMoviesIds = moviesList;
-	}
-
 	public HashMap<Integer, HashMap<Integer, Integer>> getMovieIdToUsersIdsIncludingRatings()
 	{
 		return this.movieIdToUsersIdsIncludingRatings;
