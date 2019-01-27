@@ -23,8 +23,8 @@ public class Main {
             Processing processing = new Processing();
             processing.readMoviesFile(moviesFileName);
             processing.readRatingsFile(ratingsFileName);
-            processing.setSelectedMoviesIds(generateMoviesArray(processing, 100, allMovies, i));
-            //processing.readMoviesIdsFile(moviesIdsFileName);
+            //processing.setSelectedMoviesIds(generateMoviesArray(processing, 100, allMovies, i));
+            processing.readMoviesIdsFile(moviesIdsFileName);
             processing.readRatingsFileIncludeRating(ratingsFileName);
 
             CorrelationAlgorithmImprovement s = new CorrelationAlgorithmImprovement(processing);
