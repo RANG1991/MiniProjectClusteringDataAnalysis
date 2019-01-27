@@ -14,7 +14,7 @@ public class Main {
         String ratingsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/ratings.dat";
         String moviesFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/movies.dat";
         int correlationAlgorithm = 1;
-        String moviesIdsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/selected_movies_ids_100.txt";
+        String moviesIdsFileName = "C:\\Users\\Admin\\Desktop\\subset2.txt";
 
         HashSet<Integer> allMovies = new HashSet<>();
 
@@ -30,6 +30,8 @@ public class Main {
             CorrelationAlgorithmImprovement s = new CorrelationAlgorithmImprovement(processing);
 
             double sumImp = s.runAlgorithm();
+
+            System.out.println("----------------------------------------------------------");
 
             CorrelationClassicAlgorithm r = new CorrelationClassicAlgorithm(processing);
 

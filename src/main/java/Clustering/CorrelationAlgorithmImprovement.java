@@ -119,7 +119,10 @@ public class CorrelationAlgorithmImprovement {
 			}
 			int index = indexOfMin;
 
-			HashSet<Integer> cluster = realCluster(correlation.get(remaining.get(index)));
+            HashSet<Integer> cluster = new HashSet<>();
+            if (correlation.containsKey(remaining.get(index))) {
+                cluster = realCluster(correlation.get(remaining.get(index)));
+            }
 			clustering.put(remaining.get(index), cluster);
 			cluster.add(remaining.get(index));
 			cluster.removeAll(clusteringSet);
@@ -130,13 +133,13 @@ public class CorrelationAlgorithmImprovement {
 		return sumClustering(clustering);
 	}
 
-	private HashSet<Integer> realCluster(ArrayList<Integer> remaning) {
+	private HashSet<Integer> realCluster(ArrayList<Integer> remaining) {
 		ArrayList<Integer> toRemove = new ArrayList<Integer>();
-		HashSet<Integer> cluster = new HashSet<Integer>(remaning);
-		for(int movieId_i : remaning){
-			int size = remaning.size();
+		HashSet<Integer> cluster = new HashSet<Integer>(remaining);
+		for(int movieId_i : remaining){
+			int size = remaining.size();
 			int counter=0;
-			for (int movieId_j : remaning)
+			for (int movieId_j : remaining)
 			{
 				if ((movieId_i != movieId_j) && !toRemove.contains(movieId_i)){
 					if (correlation.get(movieId_i).contains(movieId_j)){
@@ -191,9 +194,9 @@ public class CorrelationAlgorithmImprovement {
 			sum = sum + cluster.size();
 			for (int movieId : cluster)
 			{
-			//	System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
+				System.out.print(movieId + " " + processing.getMovieIdToMovieProps().get(movieId).getFirst() + ",");
 			}
-			//System.out.println();
+			System.out.println();
 			sumClustering= sumClustering + calculateCost(cluster, p_mArray , processing.getSelectedMoviesIds(), RelationFraction);
 		}
 		return sumClustering;
