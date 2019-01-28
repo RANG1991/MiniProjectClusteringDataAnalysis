@@ -97,6 +97,177 @@ public class CorrelationAlgorithmImprovement {
 		return sumClustering;
 	}
 
+	public HashMap<Integer, HashSet<Integer>> finalStage(HashMap<Integer, HashSet<Integer>> clustering) {
+
+		Integer from_head1 = -1;
+		Integer to_head2 = -1;
+		Integer which_movie = -1;
+
+
+
+		HashMap<Integer, HashSet<Integer>> tempClustering = new HashMap<>();
+		HashMap<Integer, HashSet<Integer>> finalClustering = new HashMap<>();
+
+		int size = 0;
+		for (Integer movie : clustering.keySet())
+		{
+			size += clustering.get(movie).size();
+		}
+		System.out.println(size);
+
+		boolean canImprove = true;
+
+		System.out.println("start func " + clustering);
+
+		for (Integer entry : clustering.keySet()) {
+			HashSet<Integer> h = new HashSet<>(clustering.get(entry));
+			tempClustering.put(entry, h);
+		}
+		int count = 0;
+		double initalSum = calculateSingleIterCost(clustering);
+		double initalSumFinal = initalSum;
+		while (canImprove)
+		{
+			for (Integer movie_head : clustering.keySet()) {
+				for (Integer movie : clustering.get(movie_head)) {
+
+
+					tempClustering.get(movie_head).remove(movie);
+					if (movie == movie_head)
+					{
+						if (!tempClustering.get(movie_head).isEmpty()) {
+							tempClustering.put(tempClustering.get(movie_head).iterator().next(), tempClustering.get(movie_head));
+						}
+					}
+					HashSet<Integer> cluster_temp = new HashSet<>();
+					cluster_temp.add(movie);
+					tempClustering.put(movie, cluster_temp);
+
+
+					double currSum = calculateSingleIterCost(tempClustering);
+					if (initalSum > currSum) {
+						initalSum = currSum;
+						System.out.println(initalSum);
+						from_head1 = movie_head;
+						to_head2 = -2;
+						which_movie = movie;
+
+						size = 0;
+						for (Integer movieForSize : tempClustering.keySet()) {
+							size += tempClustering.get(movieForSize).size();
+						}
+						System.out.println("size after end iter: " + size);
+					}
+
+					for (Integer entry : clustering.keySet()) {
+						HashSet<Integer> h = new HashSet<>(clustering.get(entry));
+						tempClustering.put(entry, h);
+					}
+
+
+					for (Integer movie_head_2 : clustering.keySet()) {
+						if (movie_head_2 != movie_head) {
+							tempClustering.get(movie_head).remove(movie);
+							tempClustering.get(movie_head_2).add(movie);
+
+							if (movie_head == movie) {
+
+								if (!tempClustering.get(movie_head).isEmpty()) {
+									tempClustering.put(tempClustering.get(movie_head).iterator().next(), tempClustering.get(movie_head));
+
+								}
+								tempClustering.remove(movie_head);
+							}
+
+							if (count == 3) {
+								System.out.println("in iter  " + tempClustering);
+
+							}
+
+							 currSum = calculateSingleIterCost(tempClustering);
+							if (initalSum > currSum) {
+								initalSum = currSum;
+								System.out.println(initalSum);
+								from_head1 = movie_head;
+								to_head2 = movie_head_2;
+								which_movie = movie;
+
+								size = 0;
+									for (Integer movieForSize : tempClustering.keySet()) {
+										size += tempClustering.get(movieForSize).size();
+									}
+									System.out.println("size after end iter: " + size);
+							}
+
+							for (Integer entry : clustering.keySet()) {
+								HashSet<Integer> h = new HashSet<>(clustering.get(entry));
+								tempClustering.put(entry, h);
+							}
+
+						}
+					}
+				}
+			}
+			//after for
+
+			if (initalSum >= initalSumFinal)
+			{
+				canImprove = false;
+			}
+			else
+			{
+				if (from_head1!=-1 && to_head2!=-1) {
+
+					if (to_head2 == -2) {
+						tempClustering.get(from_head1).remove(which_movie);
+						if (which_movie == from_head1) {
+							if (!tempClustering.get(from_head1).isEmpty()) {
+								tempClustering.put(tempClustering.get(from_head1).iterator().next(), tempClustering.get(from_head1));
+							}
+						}
+						HashSet<Integer> cluster_temp = new HashSet<>();
+						cluster_temp.add(which_movie);
+						tempClustering.put(which_movie, cluster_temp);
+					} else {
+						tempClustering.get(from_head1).remove(which_movie);
+						tempClustering.get(to_head2).add(which_movie);
+						if (from_head1 == which_movie) {
+							if (!tempClustering.get(from_head1).isEmpty()) {
+								tempClustering.put(tempClustering.get(from_head1).iterator().next(), tempClustering.get(from_head1));
+
+							}
+							tempClustering.remove(from_head1);
+						}
+					}
+					for (Integer entry : tempClustering.keySet()) {
+						HashSet<Integer> h = new HashSet<>(tempClustering.get(entry));
+						clustering.put(entry, h);
+					}
+
+				}
+				initalSumFinal = initalSum;
+				count++;
+			}
+		}
+
+		size = 0;
+
+
+			finalClustering = new HashMap<>();
+				for (Integer entry : clustering.keySet()) {
+					HashSet<Integer> h = new HashSet<>(clustering.get(entry));
+					finalClustering.put(entry, h);
+				}
+		for (Integer movie : finalClustering.keySet())
+		{
+			size += finalClustering.get(movie).size();
+		}
+		System.out.println(size);
+
+		return finalClustering;
+	}
+
+
 
 	public double runClustering()
 	{
@@ -120,7 +291,10 @@ public class CorrelationAlgorithmImprovement {
 				}
 			}
 		}
-		return sumClustering(clustering);
+		System.out.println(" stage 1: "+ sumClustering(clustering));
+
+		System.out.println(" stage 2: "+ sumClustering(finalStage(clustering)));
+		return sumClustering(finalStage(clustering));
 	}
 
 
@@ -161,7 +335,6 @@ public class CorrelationAlgorithmImprovement {
 			clustering.get(minMovie1).addAll(clusterOfMax);
 			clustering.remove(minMovie2);
 		}
-
 		return calculateSingleIterCost(clustering);
 	}
 

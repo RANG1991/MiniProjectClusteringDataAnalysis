@@ -11,31 +11,31 @@ public class Main {
 	public static void main (String[] args) throws IOException
 	{
 		double start = System.currentTimeMillis();
-        String ratingsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/ratings.dat";
-        String moviesFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/ml-1m/movies.dat";
+        String ratingsFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/ml-1m/ratings.dat";
+        String moviesFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/ml-1m/movies.dat";
         int correlationAlgorithm = 1;
-        String moviesIdsFileName = "C:\\Users\\Admin\\Desktop/mini_project_clustering/selected_movies_ids_100.txt";
+        String moviesIdsFileName = "/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/selected_movies_ids_100.txt";
 
         HashSet<Integer> allMovies = new HashSet<>();
 
-        for (int i = 0 ; i < 20 ; i++) {
+        for (int i = 0 ; i < 1 ; i++) {
 
             Processing processing = new Processing();
             processing.readMoviesFile(moviesFileName);
             processing.readRatingsFile(ratingsFileName);
-            processing.setSelectedMoviesIds(generateMoviesArray(processing, 100, allMovies, i));
-            //processing.readMoviesIdsFile(moviesIdsFileName);
+            //processing.setSelectedMoviesIds(generateMoviesArray(processing, 100, allMovies, i));
+            processing.readMoviesIdsFile(moviesIdsFileName);
             processing.readRatingsFileIncludeRating(ratingsFileName);
 
             CorrelationAlgorithmImprovement s = new CorrelationAlgorithmImprovement(processing);
 
-            double sumImp = s.runAlgorithm();
+            s.runAlgorithm();
 
             CorrelationClassicAlgorithm r = new CorrelationClassicAlgorithm(processing);
 
             double sumReg = r.runAlgorithm();
 
-            System.out.println(sumImp + "\t" + sumReg);
+            System.out.println(sumReg);
         }
         
         System.out.println(System.currentTimeMillis() - start);
@@ -46,21 +46,21 @@ public class Main {
     {
         int i = 0;
         ArrayList<Integer> moviesArray = new ArrayList<>();
-        PrintWriter writer = new PrintWriter("C:\\Users\\Admin\\Desktop/mini_project_clustering/randomsubset"
-                + (j + 1) + ".txt", "UTF-8");
+        //PrintWriter writer = new PrintWriter("/users/studs/bsc/2016/ranga/Desktop/mini_project_clustering/randomsubset"
+         //       + (j + 1) + ".txt", "UTF-8");
         while (i < numberOfMovies)
         {
             int randomNum = ThreadLocalRandom.current().nextInt(1, processing.getNumberOfMovies());
             if (!allMovies.contains(randomNum) && processing.getMovieIdToUsersIds().keySet().contains(randomNum)
              && processing.getMovieIdToUsersIds().get(randomNum).size() >= 10)
             {
-                writer.println(randomNum);
+              //  writer.println(randomNum);
                 allMovies.add(randomNum);
                 moviesArray.add(randomNum);
                 i++;
             }
         }
-        writer.close();
+       // writer.close();
         return moviesArray;
     }
 
